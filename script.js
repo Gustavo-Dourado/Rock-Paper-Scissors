@@ -148,4 +148,19 @@ function displayFinalResult(gameState){
     alert(message);
 }
 
-//playGame();
+//getElements
+const play = document.querySelector("#play-game");
+const mainBoard = document.querySelector(".main-board");
+const userBoard = document.querySelector(".user-board");
+const gameDashboard = document.querySelector(".game-dashboard");
+
+//Mudar o display de acordo com a iteração do usuário
+play.addEventListener('click', () => {
+    play.style.display = 'none';
+    mainBoard.style.display = 'block';
+    userBoard.style.display = 'flex';
+})
+
+//Inicio do Jogo
+play.addEventListener('click', playGame);
+

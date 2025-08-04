@@ -4,8 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo: Pedra, Papel ou Tesoura</title>
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
+    <div class="main-container">
+        <h1 class="title">Vamos jogar <br>Pedra, Papel ou Tesoura</h1>
+
+        <button id="play-game" class="button control" type="button">Iniciar Jogo</button>
+
+        <div class="main-board">
+            <h2 id="round-indicator">Round <span>1</span></h2>
+
+            <div class="user-board">
+                <p>Faça sua escolha nos botões abaixo:</p>
+                
+                <div class="user-choices">
+                    <button id="rock" class="button choice" type="button">Pedra</button>
+                    <button id="paper" class="button choice" type="button">Papel</button>
+                    <button id="scissors" class="button choice" type="button">Tesoura</button>
+                </div>
+                
+                <button id="play-round" class="button control" type="button">Jogar</button>
+            </div>
+            
+            <div class="game-dashboard">
+                <div class="display round">
+                    <p id="human-choice">Sua Escolha: <span>Pedra</span></p>
+                    <p id="bot-choice">Escolha do computador: <span>Tesoura</span></p>
+                    <br>
+                    <p id="round-result">Você VENCEU neste round!</p>
+                    <p id="round-rule">Pedra vence tesoura</p>
+                    <br>
+                    <p id="human-score">Seu Score: <span>0</span></p>
+                    <p id="bot-score">Computador Score: <span>0</span></p>
+                </div>
+                
+                <div class="control-game">
+                    <button id="next-round" class="button control" type="button">Prox. Round</button>
+                    <button id="exit" class="button control" type="button">Sair</button>
+                </div>
+            </div>
+            
+            <p id="round-counter">Round <span id="round-actual">1</span> de <span id="round-total">5</span></p>
+        </div>
+    </div>
+
     <script src="./script.js"></script>
 </body>
 </html>
