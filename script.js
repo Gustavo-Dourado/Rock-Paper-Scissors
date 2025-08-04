@@ -148,4 +148,4 @@ function displayFinalResult(gameState){
     alert(message);
 }
 
-playGame();
+//playGame();
