@@ -50,7 +50,6 @@ function initializeGameState(){
 
 function playRound(gameState, round){
     const humanChoice = getHumanChoice();
-    //if (humanChoice === EXIT_CODE) return false;
 
     const botChoice = getBotChoice();
     const roundResult = determineRoundWinner(humanChoice, botChoice);
@@ -58,8 +57,6 @@ function playRound(gameState, round){
     updateGameState(gameState, roundResult);
 
     displayRoundResult(humanChoice, botChoice, gameState, round, roundResult);
-
-    //return true;  
 }
 
 function getHumanChoice(){
@@ -98,16 +95,16 @@ function updateGameState(gameState, roundResult){
 function displayRoundResult(humanChoice, botChoice, gameState, round, roundResult){
 
     const roundMessage = createRoundMessage(humanChoice, botChoice, roundResult);
-        let messageAlert;
 
-        messageAlert =`Round ${round}:`;
-        messageAlert += `\n \t Sua Escolha: ${CHOICE_NAMES[humanChoice]}`;
-        messageAlert += `\n \t Escolha do Computador: ${CHOICE_NAMES[botChoice]}\n`;
-        messageAlert += `${roundMessage}`;
-        messageAlert += `\n \t Seu Score: ${gameState.humanScore}`;
-        messageAlert += `\n \t Computador Score: ${gameState.botScore}`;
-    
-    alert(messageAlert);
+        document.querySelector("#round-indicator span").textContent = round;
+        document.querySelector("#human-choice-name").textContent = CHOICE_NAMES[humanChoice];
+        document.querySelector("#bot-choice-name").textContent =  CHOICE_NAMES[botChoice];
+        document.querySelector("#round-message-winner").textContent = roundMessage;
+        document.querySelector("#human-score").textContent = gameState.humanScore;
+        document.querySelector("#bot-score").textContent = gameState.botScore;
+
+        document.querySelector("#round-counter #round-actual").textContent = round;
+        document.querySelector("#round-counter #round-total").textContent = MAX_ROUNDS;
 }
 
 function createRoundMessage(humanChoice, botChoice, roundResult){
@@ -151,6 +148,7 @@ const nextRound = document.querySelector("#next-round");
 const buttonsExit = document.querySelectorAll(".exit");
 const firstExit = buttonsExit[0];
 const secondExit = buttonsExit[1];
+
 
 //funções para modificar displays do jogo
 function showInicialPanel(){
@@ -223,6 +221,7 @@ initGame.addEventListener('click', playGame);
 initGame.addEventListener('click', showRoundPanel);
 
 initRound.addEventListener('click', showResultsPanel);
+
 nextRound.addEventListener('click', showRoundPanel);
 
 buttonsExit.forEach(buttonExit => buttonExit.addEventListener('click', showInicialPanel));
