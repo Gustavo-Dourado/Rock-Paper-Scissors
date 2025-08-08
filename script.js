@@ -1,16 +1,37 @@
+//getElements
+const initGame = document.querySelector("#play-game");
+const mainBoard = document.querySelector(".main-board");
+const userBoard = document.querySelector(".user-board");
+const gameDashboard = document.querySelector(".game-dashboard");
+
+const userChoices = document.querySelector(".user-choices");
+
+const initRound = document.querySelector("#play-round");
+
+const nextRound = document.querySelector("#next-round");
+
+const buttonsExit = document.querySelectorAll(".exit");
+const firstExit = buttonsExit[0];
+const secondExit = buttonsExit[1];
+
 const MAX_ROUNDS = 5;
-const EXIT_CODE = 9;
 
 const CHOICES = {
-    rock: 1, 
-    paper: 2, 
-    scissors: 3,
+    ROCK: 1, 
+    PAPER: 2, 
+    SCISSORS: 3,
 };
 
-const CHOICE_NAMES = {
-    [CHOICES.rock]: "Pedra",
-    [CHOICES.paper]: "Papel",
-    [CHOICES.scissors]: "Tesoura",
+const CHOICES_NAMES = {
+    ROCK: "rock",
+    PAPER: "paper",
+    SCISSORS: "scissors",
+}
+
+const NAMES_TRADUZIDOS = {
+    [CHOICES.ROCK]: "Pedra",
+    [CHOICES.PAPER]: "Papel",
+    [CHOICES.SCISSORS]: "Tesoura",
 };
 
 const ROUND_RESULT = {
@@ -19,26 +40,58 @@ const ROUND_RESULT = {
     TIE: 'tie',
 };
 
+// A variável que armazena a escolha do jogador precisa ser global
+let humanChoice = null;
+let gameState;
 
+// Adiciona event listener para armazenar a escolha do jogador
+userChoices.addEventListener('click', (e) => {
+    // Chamamos a função getHumanChoice para validar e pegar o valor
+    humanChoice = getHumanChoice(e);
+});
 
-async function playGame(){
+// Adiciona um listener para começar o jogo
+initGame.addEventListener('click', () => {
+    // Mostra o painel de rodada e inicializa o estado do jogo
+    showRoundPanel();
+    gameState = initializeGameState();
+    // Inicia o fluxo do jogo
+    handleRoundStartClick();
+});
 
-    const gameState = initializeGameState();
-
-    let shouldContinue;
-
-    for(let round = 1; round <= MAX_ROUNDS; round++){
-        
-        shouldContinue = await playOrExit();
-        if(!shouldContinue) return;
-
-        playRound(gameState, round);
-        
-        shouldContinue = await nextOrExit();
-        if(!shouldContinue) return;
-    }
+async function handleRoundStartClick() {
+    // Essa promise vai esperar o clique no botão "Jogar" ou "Encerrar"
+    const shouldContinue = await waitForPlayOrExit();
     
-    displayFinalResult(gameState);
+    if (shouldContinue) {
+        // Se o jogador clicou em "Jogar"
+        if (humanChoice) {
+            console.log('Tudo certo! O jogo pode continuar.');
+            playRound(humanChoice, gameState);
+            showResultsPanel();
+
+            // Await agora para esperar o clique de "Próxima Rodada" ou "Encerrar"
+            const shouldGoToNextRound = await waitForNextOrExit();
+            
+            if (shouldGoToNextRound) {
+                humanChoice = null; // Limpa a escolha para a próxima rodada
+                showRoundPanel();
+                handleRoundStartClick(); // Chama a próxima rodada
+            } else{
+                displayFinalResult(gameState);
+                showInicialPanel();
+                return;
+            }
+        } else {
+            alert('Por favor, escolha Pedra, Papel ou Tesoura antes de jogar!');
+            // Se o jogador não escolheu, esperamos novamente pelo clique
+            handleRoundStartClick(); 
+        }
+    } else {
+        // Se o jogador clicou em "Encerrar"
+        displayFinalResult(gameState);
+        showInicialPanel();
+    }
 }
 
 function initializeGameState(){
@@ -48,23 +101,25 @@ function initializeGameState(){
     };
 }
 
-function playRound(gameState, round){
-    const humanChoice = getHumanChoice();
-
+function playRound(humanChoice, gameState){
+    
     const botChoice = getBotChoice();
     const roundResult = determineRoundWinner(humanChoice, botChoice);
 
     updateGameState(gameState, roundResult);
 
-    displayRoundResult(humanChoice, botChoice, gameState, round, roundResult);
+    displayRoundResult(humanChoice, botChoice, gameState, 1, roundResult);
 }
 
-function getHumanChoice(){
-    return 1     
-}
+function getHumanChoice(e){
+    let choice = e.target.id;
 
-function isChoiceValid(choice){
-    return Object.values(CHOICES).includes(choice);
+    switch(choice){
+        case CHOICES_NAMES.ROCK: return CHOICES.ROCK;
+        case CHOICES_NAMES.PAPER: return CHOICES.PAPER;
+        case CHOICES_NAMES.SCISSORS: return CHOICES.SCISSORS;
+        default: return null;
+    }
 }
 
 function getBotChoice(){
@@ -75,14 +130,14 @@ function determineRoundWinner(humanChoice, botChoice){
     if(humanChoice === botChoice)
         return ROUND_RESULT.TIE;
 
-    if (humanChoice === CHOICES.rock)
-        return botChoice === CHOICES.scissors ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
+    if (humanChoice.ROCK)
+        return botChoice.SCISSORS ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
 
-    if (humanChoice === CHOICES.paper)
-        return botChoice === CHOICES.rock ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
+    if (humanChoice.PAPER)
+        return botChoice.ROCK ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
     
-    if (humanChoice === CHOICES.scissors)
-        return botChoice === CHOICES.paper ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
+    if (humanChoice.SCISSORS)
+        return botChoice.PAPER ? ROUND_RESULT.HUMAN_WIN : ROUND_RESULT.BOT_WIN;
 }
 
 function updateGameState(gameState, roundResult){
@@ -97,7 +152,7 @@ function displayRoundResult(humanChoice, botChoice, gameState, round, roundResul
     const roundMessage = createRoundMessage(humanChoice, botChoice, roundResult);
 
         document.querySelector("#round-indicator span").textContent = round;
-        document.querySelector("#human-choice-name").textContent = CHOICE_NAMES[humanChoice];
+        document.querySelector("#human-choice-name").textContent = NAMES_TRADUZIDOS[humanChoice];
         document.querySelector("#bot-choice-name").textContent =  CHOICE_NAMES[botChoice];
         document.querySelector("#round-message-winner").textContent = roundMessage;
         document.querySelector("#human-score").textContent = gameState.humanScore;
@@ -133,23 +188,6 @@ function displayFinalResult(gameState){
     alert(message);
 }
 
-//getElements
-const initGame = document.querySelector("#play-game");
-const mainBoard = document.querySelector(".main-board");
-const userBoard = document.querySelector(".user-board");
-const gameDashboard = document.querySelector(".game-dashboard");
-
-const userChoices = document.querySelector(".user-choices");
-
-const initRound = document.querySelector("#play-round");
-
-const nextRound = document.querySelector("#next-round");
-
-const buttonsExit = document.querySelectorAll(".exit");
-const firstExit = buttonsExit[0];
-const secondExit = buttonsExit[1];
-
-
 //funções para modificar displays do jogo
 function showInicialPanel(){
     mainBoard.classList.remove('block');
@@ -182,54 +220,40 @@ function showResultsPanel(){
     gameDashboard.classList.add('flex');
 }
 
-async function playOrExit(){
+async function waitForPlayOrExit(){
     return new Promise((resolve) => {
 
         function handlePlayOrExit(e){
+
+            initRound.removeEventListener('click', handlePlayOrExit);
+            firstExit.removeEventListener('click', handlePlayOrExit);
+
             if(e.target.id.includes("play")){
-                initRound.removeEventListener('click', handlePlayOrExit);
-                resolve(true);
-            } else if(e.target.id.includes("exit")){
-                firstExit.removeEventListener('click', handlePlayOrExit);
+                resolve(true);                   
+            } else if(e.target.id.includes("exit")){                              
                 resolve(false);
             }
         }
+
         firstExit.addEventListener('click', handlePlayOrExit);
         initRound.addEventListener('click', handlePlayOrExit);
     })
 }
 
-async function nextOrExit(){
+async function waitForNextOrExit(){
     return new Promise((resolve) => {
+
+        nextRound.removeEventListener('click', handleNextOrExit);
+        secondExit.removeEventListener('click', handleNextOrExit);
 
         function handleNextOrExit(e){
             if(e.target.id.includes("next")){
-                initRound.removeEventListener('click', handleNextOrExit);
                 resolve(true);
             } else if(e.target.id.includes("exit")){
-                secondExit.removeEventListener('click', handleNextOrExit);
                 resolve(false);
             }
         }
         secondExit.addEventListener('click', handleNextOrExit);
-        initRound.addEventListener('click', handleNextOrExit);
+        nextRound.addEventListener('click', handleNextOrExit);
     })
 }
-
-
-initGame.addEventListener('click', playGame);
-initGame.addEventListener('click', showRoundPanel);
-
-initRound.addEventListener('click', showResultsPanel);
-
-nextRound.addEventListener('click', showRoundPanel);
-
-buttonsExit.forEach(buttonExit => buttonExit.addEventListener('click', showInicialPanel));
-
-/*
-userChoices.addEventListener('click', (e) => {
-    console.log(e.target);
-})
-
-*/
-
