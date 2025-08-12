@@ -48,11 +48,11 @@
                             </tr>
                             <tr>
                                 <td>Seu Score</td>
-                                <td id="human-score">0</td>
+                                <td id="human-score"></td>
                             </tr>
                             <tr>
                                 <td>Computador Score</td>
-                                <td id="bot-score">0</td>
+                                <td id="bot-score"></td>
                             </tr>                        
                         </tbody>
                     </table>
@@ -65,6 +65,30 @@
             </div>
             
             <p id="round-counter">Round <span id="round-actual"></span> de <span id="round-total"></span></p>
+        </div>
+
+        <div class="final-result none">
+            <h2>Resultado Final</h2>
+
+            <div class="display">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td id="final-message-winner" colspan="2"></td>
+                        </tr>
+                        <tr>
+                            <td>Seu Score</td>
+                            <td id="final-human-score"></td>
+                        </tr>
+                        <tr>
+                            <td>Computador Score</td>
+                            <td id="final-bot-score"></td>
+                        </tr>                        
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="button control" id="reset-button" type="button">Recomeçar</button>
         </div>
     </div>
 

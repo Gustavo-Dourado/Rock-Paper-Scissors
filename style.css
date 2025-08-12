@@ -6,18 +6,6 @@
     box-sizing: border-box;
 }
 
-.none{
-    display: none;
-}
-
-.block{
-    display: block;
-}
-
-.flex{
-    display: flex;
-}
-
 body {
   font-family: "Libertinus Sans", sans-serif;
   font-weight: 400;
@@ -80,6 +68,7 @@ button{
 
 .user-board{
     width: 100%;
+    display: flex;
     flex-direction: column;
     row-gap: 20px;
     align-items: center;
@@ -104,6 +93,7 @@ button{
 
 .game-dashboard{
     width: 100%;
+    display: flex;
     flex-direction: column;
     align-items: center;
     row-gap: 20px;
@@ -150,5 +140,24 @@ td:only-child{
 .main-container #round-counter{
     text-align: right;
     margin-top: 20px;
+}
+
+.final-result{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+}
+
+.none{
+    display: none;
+}
+
+.block{
+    display: block;
+}
+
+.flex{
+    display: flex;
 }
 
